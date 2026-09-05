@@ -447,6 +447,295 @@
     text-transform: uppercase;
     color: var(--ink);
   }
+
+  /* ---------- CHAT ---------- */
+  .chat-btn {
+    position: fixed;
+    right: 1.4rem;
+    bottom: 1.4rem;
+    z-index: 60;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 1px solid var(--crimson-dim);
+    background: linear-gradient(160deg, rgba(177,18,60,0.9), rgba(87,16,31,0.95));
+    color: var(--bone);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    transition: transform 0.35s cubic-bezier(0.2,0.6,0.2,1), box-shadow 0.35s ease;
+  }
+
+  .chat-btn:hover { transform: translateY(-4px) scale(1.05); box-shadow: 0 14px 40px rgba(177,18,60,0.35); }
+
+  .chat-btn svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+
+  .chat-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 9px;
+    background: var(--bone);
+    color: var(--crimson);
+    font-family: "Arial", sans-serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .chat-badge.show { display: flex; animation: badgePop 0.4s ease; }
+
+  @keyframes badgePop { 0% { transform: scale(0); } 70% { transform: scale(1.2); } 100% { transform: scale(1); } }
+
+  .chat-panel {
+    position: fixed;
+    right: 1.4rem;
+    bottom: calc(1.4rem + 72px);
+    z-index: 59;
+    width: min(360px, calc(100vw - 2rem));
+    height: min(520px, calc(100vh - 120px));
+    background: linear-gradient(180deg, #151110, #0d0b0a);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: 0 24px 70px rgba(0,0,0,0.6);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(24px) scale(0.96);
+    pointer-events: none;
+    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.2,0.6,0.2,1);
+  }
+
+  .chat-panel.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+
+  .chat-head {
+    padding: 1.1rem 1.2rem;
+    border-bottom: 1px solid var(--line);
+    background: linear-gradient(160deg, rgba(177,18,60,0.16), transparent 70%);
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+  }
+
+  .chat-head .chat-icon {
+    width: 34px; height: 34px; flex: none;
+    border-radius: 50%;
+    background: var(--crimson);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--coal);
+  }
+
+  .chat-head .chat-icon svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+  .chat-head .titles { flex: 1; min-width: 0; }
+
+  .chat-head .titles b {
+    display: block;
+    font-family: "Arial", sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--bone);
+  }
+
+  .chat-head .titles i {
+    display: block;
+    margin-top: 3px;
+    font-family: "Arial", sans-serif;
+    font-style: normal;
+    font-size: 0.66rem;
+    color: var(--ink);
+  }
+
+  .chat-online {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.28rem 0.7rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-family: "Arial", sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  .chat-online .dot { width: 6px; height: 6px; border-radius: 50%; background: #3fa463; animation: pulseGreen 2s ease-out infinite; }
+
+  @keyframes pulseGreen {
+    0%   { box-shadow: 0 0 0 0 rgba(63,164,99,0.55); }
+    70%  { box-shadow: 0 0 0 10px rgba(63,164,99,0); }
+    100% { box-shadow: 0 0 0 0 rgba(63,164,99,0); }
+  }
+
+  .chat-close {
+    background: none; border: none; cursor: pointer;
+    color: var(--ink); padding: 4px;
+    transition: color 0.3s ease, transform 0.3s ease;
+  }
+  .chat-close:hover { color: var(--bone); transform: rotate(90deg); }
+  .chat-close svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; }
+
+  .chat-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.1rem 1.2rem;
+    scroll-behavior: smooth;
+  }
+
+  .chat-body::-webkit-scrollbar { width: 6px; }
+  .chat-body::-webkit-scrollbar-track { background: transparent; }
+  .chat-body::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+
+  .chat-welcome {
+    margin-bottom: 1rem;
+    padding: 0.9rem 1rem;
+    border: 1px dashed var(--line);
+    border-radius: 10px;
+    font-family: "Arial", sans-serif;
+    font-size: 0.66rem;
+    line-height: 1.7;
+    color: var(--ink);
+    text-align: center;
+  }
+
+  .msg { display: flex; margin-bottom: 0.85rem; animation: msgIn 0.35s ease; }
+  @keyframes msgIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  .msg.mine { justify-content: flex-end; }
+
+  .msg-bubble {
+    max-width: 82%;
+    padding: 0.55rem 0.9rem 0.42rem;
+    border-radius: 14px 14px 14px 4px;
+    background: var(--smoke);
+    border: 1px solid var(--line);
+  }
+
+  .msg.mine .msg-bubble {
+    border-radius: 14px 14px 4px 14px;
+    background: rgba(177,18,60,0.16);
+    border-color: var(--crimson-dim);
+  }
+
+  .msg-meta { display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.22rem; }
+
+  .msg-nick { font-family: "Arial", sans-serif; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.06em; }
+
+  .msg-time { font-family: "Arial", sans-serif; font-size: 0.55rem; color: var(--ink); }
+
+  .msg-text { font-size: 0.82rem; line-height: 1.5; color: var(--bone); word-break: break-word; white-space: pre-wrap; }
+
+  .chat-input-row {
+    padding: 0.85rem 1rem;
+    border-top: 1px solid var(--line);
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+  }
+
+  .chat-input {
+    flex: 1;
+    background: var(--smoke);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.62rem 1rem;
+    color: var(--bone);
+    font-size: 0.82rem;
+    font-family: "Georgia", serif;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+
+  .chat-input:focus { border-color: var(--crimson-dim); }
+
+  .chat-input::placeholder { color: var(--ink); }
+
+  .chat-send {
+    width: 44px; height: 44px; flex: none;
+    border-radius: 50%;
+    border: 1px solid var(--crimson-dim);
+    background: var(--crimson);
+    color: var(--coal);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  .chat-send:hover { transform: scale(1.06); }
+
+  .chat-send:disabled { opacity: 0.35; cursor: default; transform: none; }
+
+  .chat-send svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  .chat-nick-row {
+    padding: 0 1rem 0.8rem;
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+  }
+
+  .chat-nick-input {
+    flex: 1;
+    background: var(--smoke);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.55rem 1rem;
+    color: var(--bone);
+    font-size: 0.8rem;
+    font-family: "Georgia", serif;
+    outline: none;
+  }
+
+  .chat-nick-input:focus { border-color: var(--crimson-dim); }
+
+  .chat-nick-save {
+    padding: 0.55rem 1rem;
+    border-radius: 999px;
+    border: 1px solid var(--crimson-dim);
+    background: transparent;
+    color: var(--rose);
+    font-family: "Arial", sans-serif;
+    font-size: 0.66rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  .chat-nick-save:hover { background: var(--crimson); color: var(--coal); }
+
+  .chat-status {
+    padding: 0.5rem 1rem 0.2rem;
+    font-family: "Arial", sans-serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-align: center;
+  }
+
+  .chat-status.off { color: var(--crimson); }
+
+  @media (max-width: 480px) {
+    .chat-panel {
+      right: 0.7rem;
+      left: 0.7rem;
+      bottom: calc(1.4rem + 66px);
+      width: auto;
+    }
+  }
 </style>
 </head>
 <body>
@@ -535,6 +824,44 @@
   <!-- FOOTER -->
   <footer>Нет насилию над женщинами &nbsp;·&nbsp; 2026</footer>
 
+  <!-- CHAT -->
+  <button class="chat-btn" id="chatBtn" aria-label="Открыть чат">
+    <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+    <span class="chat-badge" id="chatBadge">1</span>
+  </button>
+
+  <section class="chat-panel" id="chatPanel" aria-hidden="true">
+    <div class="chat-head">
+      <div class="chat-icon"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></div>
+      <div class="titles">
+        <b>Рядом · чат</b>
+        <i>Здесь говорят и слушают</i>
+      </div>
+      <span class="chat-online"><span class="dot"></span><span id="chatOnline">0</span></span>
+      <button class="chat-close" id="chatClose" aria-label="Закрыть чат">
+        <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+      </button>
+    </div>
+
+    <div class="chat-status" id="chatStatus">Подключение к комнате…</div>
+
+    <div class="chat-body" id="chatBody">
+      <div class="chat-welcome">Это общий чат тех, кто говорит «нет» насилию. Будь бережен к словам — здесь каждый может быть уязвим.</div>
+    </div>
+
+    <div class="chat-nick-row" id="chatNickRow" style="display:none;">
+      <input class="chat-nick-input" id="chatNickInput" maxlength="22" placeholder="Как тебя называть?">
+      <button class="chat-nick-save" id="chatNickSave">Войти</button>
+    </div>
+
+    <div class="chat-input-row">
+      <input class="chat-input" id="chatInput" maxlength="300" placeholder="Напиши что-то доброе…" disabled>
+      <button class="chat-send" id="chatSend" aria-label="Отправить" disabled>
+        <svg viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+      </button>
+    </div>
+  </section>
+
 <script>
   var total = 31;
   var grid = document.getElementById('grid');
@@ -593,6 +920,265 @@
 
     tryOnline();
   })();
+</script>
+
+<script src="https://unpkg.com/mqtt@5/dist/mqtt.min.js"></script>
+<script>
+// ----- Онлайн-чат (MQTT / HiveMQ public broker) -----
+(function () {
+  var BROKER = 'wss://broker.hivemq.com:8884/mqtt';
+  var TOPIC_CHAT = 'net-nasiliyu/chat';
+  var TOPIC_ONLINE = 'net-nasiliyu/online';
+  var CLIENT_ID = 'nn-' + Math.random().toString(16).slice(2, 12);
+  var NICK_KEY = 'netn_v1:nick';
+
+  var mqttObj = window.mqtt;
+  var client = null;
+  var connected = false;
+  var nick = localStorage.getItem(NICK_KEY) || '';
+  var myId = CLIENT_ID + ':' + Date.now();
+
+  var panel = document.getElementById('chatPanel');
+  var body = document.getElementById('chatBody');
+  var btn = document.getElementById('chatBtn');
+  var badge = document.getElementById('chatBadge');
+  var statusEl = document.getElementById('chatStatus');
+  var input = document.getElementById('chatInput');
+  var sendBtn = document.getElementById('chatSend');
+  var nickRow = document.getElementById('chatNickRow');
+  var nickInput = document.getElementById('chatNickInput');
+  var nickSave = document.getElementById('chatNickSave');
+  var onlineEl = document.getElementById('chatOnline');
+
+  var localHist = JSON.parse(localStorage.getItem('netn_v1:chatlocal') || '[]');
+  var seen = localHist.map(function (m) { return m.id; });
+  var unseen = 0;
+  var presence = {};
+  var panelWasOpen = false;
+
+  function esc(s) {
+    return String(s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function nickColor(n) {
+    var h = 0;
+    for (var i = 0; i < n.length; i++) h = (h * 31 + n.charCodeAt(i)) >>> 0;
+    var hue = h % 360;
+    return 'hsl(' + hue + ', 60%, 68%)';
+  }
+
+  function now() { return new Date(); }
+  function fmtTime(d) {
+    return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+  }
+
+  function addMsg(m, mine) {
+    var row = document.createElement('div');
+    row.className = 'msg' + (mine ? ' mine' : '');
+
+    var bubble = document.createElement('div');
+    bubble.className = 'msg-bubble';
+
+    var meta = document.createElement('div');
+    meta.className = 'msg-meta';
+
+    var nk = document.createElement('span');
+    nk.className = 'msg-nick';
+    nk.style.color = nickColor(m.n);
+    nk.textContent = m.n;
+
+    var tm = document.createElement('span');
+    tm.className = 'msg-time';
+    tm.textContent = fmtTime(new Date(m.t));
+
+    meta.appendChild(nk);
+    meta.appendChild(tm);
+
+    var tx = document.createElement('div');
+    tx.className = 'msg-text';
+    tx.innerHTML = esc(m.m);
+
+    bubble.appendChild(meta);
+    bubble.appendChild(tx);
+    row.appendChild(bubble);
+    body.appendChild(row);
+
+    localHist.push(m);
+    if (localHist.length > 40) localHist.shift();
+    localStorage.setItem('netn_v1:chatlocal', JSON.stringify(localHist));
+
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function onMsg(topic, payload) {
+    try {
+      var m = JSON.parse(payload.toString());
+      if (!m || !m.id || !m.n || !m.m) return;
+      if (seen.indexOf(m.id) !== -1) return;
+      seen.push(m.id);
+      if (seen.length > 120) seen.shift();
+
+      var mine = m.id === myId;
+      addMsg(m, mine);
+
+      if (!panel.classList.contains('open') && !mine) {
+        unseen++;
+        badge.textContent = unseen > 9 ? '9+' : String(unseen);
+        badge.classList.add('show');
+      }
+    } catch (e) {}
+  }
+
+  function onPresence(topic, payload) {
+    try {
+      var p = JSON.parse(payload.toString());
+      if (!p || !p.id) return;
+      presence[p.id] = p.t;
+    } catch (e) {}
+  }
+
+  function prunePresence() {
+    var nowMs = Date.now();
+    var n = 0;
+    for (var k in presence) {
+      if (nowMs - presence[k] > 45000) delete presence[k];
+      else n++;
+    }
+    onlineEl.textContent = n;
+  }
+
+  function heartBeat() {
+    if (!connected || !panel.classList.contains('open')) return;
+    client.publish(TOPIC_ONLINE, JSON.stringify({ id: myId, nick: nick, t: Date.now() }), { qos: 0 });
+  }
+
+  function connect() {
+    if (!mqttObj) { offline('Сервер чата не загружен'); return; }
+    try {
+      client = mqttObj.connect(BROKER, {
+        clientId: CLIENT_ID,
+        connectTimeout: 15000,
+        reconnectPeriod: 3000,
+        keepalive: 30,
+        clean: true
+      });
+    } catch (e) { offline('Ошибка подключения'); return; }
+
+    client.on('connect', function () {
+      connected = true;
+      setStatus('connected');
+      client.subscribe(TOPIC_CHAT);
+      client.subscribe(TOPIC_ONLINE);
+      heartBeat();
+    });
+
+    client.on('message', function (t, p) {
+      if (t === TOPIC_CHAT) onMsg(t, p);
+      else onPresence(t, p);
+    });
+
+    client.on('error', function () {
+      if (!connected) offline('Комната недоступна');
+    });
+
+    client.on('close', function () {
+      connected = false;
+      if (panel.classList.contains('open')) setStatus('reconnecting');
+    });
+
+    var int1 = setInterval(heartBeat, 20000);
+    var int2 = setInterval(prunePresence, 10000);
+  }
+
+  function offline(msg) {
+    setStatus('off', msg);
+    input.disabled = true;
+    sendBtn.disabled = true;
+  }
+
+  function setStatus(kind, text) {
+    var base = { connecting: 'Подключение к комнате…', connected: 'Комната · по-настоящему', reconnecting: 'Переподключение…', off: text || 'Комната недоступна — офлайн' }[kind];
+    statusEl.textContent = base;
+    statusEl.classList.toggle('off', kind === 'off');
+  }
+
+  function updateNickUI() {
+    if (nick) {
+      nickRow.style.display = 'none';
+      input.placeholder = 'Напиши что-то доброе…';
+      input.disabled = !connected;
+      sendBtn.disabled = !connected;
+    } else {
+      nickRow.style.display = 'flex';
+      input.disabled = true;
+      sendBtn.disabled = true;
+      nickInput.focus();
+    }
+  }
+
+  function send() {
+    var text = input.value.trim();
+    if (!text || !nick || !connected) return;
+    var m = { id: myId, n: nick, m: text, t: Date.now() };
+    try {
+      client.publish(TOPIC_CHAT, JSON.stringify(m), { qos: 0 });
+    } catch (e) { return; }
+    input.value = '';
+    input.focus();
+  }
+
+  // UI toggling
+  btn.addEventListener('click', function () {
+    panel.classList.add('open');
+    panel.setAttribute('aria-hidden', 'false');
+    unseen = 0;
+    badge.classList.remove('show');
+    setStatus(connected ? 'connected' : 'connecting');
+    if (!connected && mqttObj) {} // wait for connect/error
+    updateNickUI();
+    heartBeat();
+    setTimeout(function () { body.scrollTop = body.scrollHeight; }, 50);
+  });
+
+  document.getElementById('chatClose').addEventListener('click', function () {
+    panel.classList.remove('open');
+    panel.setAttribute('aria-hidden', 'true');
+  });
+
+  nickSave.addEventListener('click', function () {
+    var v = nickInput.value.trim().slice(0, 22);
+    if (!v) return;
+    nick = v;
+    localStorage.setItem(NICK_KEY, v);
+    updateNickUI();
+    heartBeat();
+  });
+
+  nickInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') nickSave.click();
+  });
+
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') send();
+  });
+  sendBtn.addEventListener('click', send);
+
+  // local history on load (rendered when panel opens first time)
+  var inited = false;
+  function renderHist() {
+    if (inited) return;
+    inited = true;
+    localHist.forEach(function (m) {
+      addMsg(m, m.id === myId);
+    });
+    body.scrollTop = body.scrollHeight;
+  }
+  btn.addEventListener('click', renderHist, { once: true });
+
+  connect();
+})();
 </script>
 
 </body>
