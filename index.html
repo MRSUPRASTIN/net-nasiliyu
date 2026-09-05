@@ -404,6 +404,39 @@
   }
 
   /* ---------- FOOTER ---------- */
+  .visits {
+    padding: 2.6rem 1.5rem 1.6rem;
+    text-align: center;
+  }
+
+  .visits .visits-label {
+    font-family: "Arial", sans-serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 1.1rem;
+  }
+
+  .visits .visits-num {
+    font-size: clamp(2.2rem, 6vw, 3.6rem);
+    font-weight: 300;
+    color: var(--bone);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .visits .visits-num em { color: var(--crimson); font-style: normal; }
+
+  .visits .visits-note {
+    margin-top: 0.9rem;
+    font-family: "Arial", sans-serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.7;
+  }
+
   footer {
     border-top: 1px solid var(--line);
     padding: 2.4rem 1.5rem;
@@ -492,6 +525,13 @@
     <a class="btn" href="#top">Скажи нет</a>
   </section>
 
+  <!-- VISITS -->
+  <section class="visits" id="visits">
+    <div class="visits-label">Нас уже посмотрели</div>
+    <div class="visits-num"><span id="visitCount">0</span><em> +</em></div>
+    <div class="visits-note">Каждый просмотр приближает перемены</div>
+  </section>
+
   <!-- FOOTER -->
   <footer>Нет насилию над женщинами &nbsp;·&nbsp; 2026</footer>
 
@@ -504,6 +544,55 @@
     html += '<figure><img src="img/' + n + '.jpg" alt="Кадр ' + i + '" loading="lazy"></figure>';
   }
   grid.innerHTML = html;
+
+  // ----- Счётчик посещений -----
+  (function () {
+    var KEY = 'netn_v1:visits';
+    var el = document.getElementById('visitCount');
+
+    function animate(from, to) {
+      var start = null;
+      var dur = 1200;
+      function step(ts) {
+        if (!start) start = ts;
+        var p = Math.min(1, (ts - start) / dur);
+        var eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(from + (to - from) * eased).toLocaleString('ru-RU');
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    function loadLocal() {
+      var n = parseInt(localStorage.getItem(KEY) || '0', 10) || 0;
+      n += 1;
+      localStorage.setItem(KEY, String(n));
+      animate(0, n);
+    }
+
+    function tryOnline() {
+      var key = 'net-nasiliyu:visits';
+      var urls = [
+        'https://api.countapi.xyz/hit/' + key,
+        'https://counterapi.dev/api/' + key
+      ];
+      var i = 0;
+      function attempt() {
+        if (i >= urls.length) { loadLocal(); return; }
+        fetch(urls[i++], { mode: 'cors' })
+          .then(function (r) { return r.json ? r.json() : r.text(); })
+          .then(function (data) {
+            var n = (data && data.value) ? parseInt(data.value, 10) : 0;
+            if (!n) { loadLocal(); return; }
+            animate(n - 3, n);
+          })
+          .catch(attempt);
+      }
+      setTimeout(attempt, 400);
+    }
+
+    tryOnline();
+  })();
 </script>
 
 </body>
