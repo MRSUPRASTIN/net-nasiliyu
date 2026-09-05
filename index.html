@@ -448,6 +448,117 @@
     color: var(--ink);
   }
 
+  /* ---------- CHARACTER ---------- */
+  .char-wrap {
+    position: fixed;
+    left: 1.4rem;
+    bottom: 1.4rem;
+    z-index: 57;
+    display: flex;
+    align-items: flex-end;
+    gap: 0.9rem;
+    max-width: calc(100vw - 6rem);
+  }
+
+  .char-col { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
+
+  .char-avatar {
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    border: 1px solid var(--crimson-dim);
+    background: radial-gradient(circle at 32% 28%, rgba(232,180,176,0.22), rgba(12,10,9,0.9) 70%);
+    box-shadow: 0 8px 26px rgba(0,0,0,0.5);
+    cursor: pointer;
+    transition: transform 0.35s cubic-bezier(0.2,0.6,0.2,1), box-shadow 0.35s ease;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .char-avatar:hover { transform: translateY(-4px) scale(1.06); box-shadow: 0 14px 40px rgba(177,18,60,0.3); }
+
+  .char-avatar svg { width: 40px; height: 40px; overflow: visible; }
+
+  .char-avatar.speaking { animation: speakPulse 1s ease-in-out infinite; }
+
+  @keyframes speakPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(177,18,60,0.0), 0 8px 26px rgba(0,0,0,0.5); }
+    50% { box-shadow: 0 0 0 14px rgba(177,18,60,0.18), 0 8px 26px rgba(0,0,0,0.5); }
+  }
+
+  .char-name {
+    font-family: "Arial", sans-serif;
+    font-size: 0.56rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  .char-bubble {
+    max-width: 250px;
+    background: linear-gradient(180deg, #191211, #100b0a);
+    border: 1px solid var(--line);
+    border-radius: 16px 16px 16px 4px;
+    padding: 0.85rem 0.95rem 0.75rem;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.55);
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+    pointer-events: none;
+    transform-origin: bottom left;
+    transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.2,0.6,0.2,1);
+  }
+
+  .char-bubble.on { opacity: 1; transform: none; pointer-events: auto; }
+
+  .char-bubble .q {
+    font-size: 0.86rem;
+    font-style: italic;
+    line-height: 1.55;
+    color: var(--bone);
+  }
+
+  .char-bubble .q em { color: var(--rose); font-style: normal; }
+
+  .char-bubble .ctrls {
+    margin-top: 0.62rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .char-mini {
+    width: 27px; height: 27px;
+    border-radius: 50%;
+    border: 1px solid var(--crimson-dim);
+    background: transparent;
+    color: var(--rose);
+    cursor: pointer;
+    font-size: 0.72rem;
+    line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+  }
+
+  .char-mini:hover { background: var(--crimson); color: var(--coal); transform: scale(1.08); }
+
+  .char-close {
+    margin-left: auto;
+    border: none;
+    background: none;
+    color: var(--ink);
+    cursor: pointer;
+    font-size: 0.72rem;
+    padding: 0;
+    width: 22px; height: 22px;
+  }
+
+  .char-close:hover { color: var(--bone); }
+
+  @media (max-width: 480px) {
+    .char-wrap { left: 0.7rem; bottom: 0.8rem; }
+    .char-avatar { width: 54px; height: 54px; }
+    .char-bubble { max-width: 190px; }
+  }
+
   /* ---------- CHAT ---------- */
   .chat-btn {
     position: fixed;
@@ -823,6 +934,31 @@
 
   <!-- FOOTER -->
   <footer>Нет насилию над женщинами &nbsp;·&nbsp; 2026</footer>
+
+  <!-- CHARACTER -->
+  <div class="char-wrap" id="charWrap">
+    <div class="char-bubble" id="charBubble">
+      <div class="q" id="charQuote">Ирина — голос поддержки. Она всегда рядом.</div>
+      <div class="ctrls">
+        <button class="char-mini" id="charPrev" aria-label="Предыдущая фраза">‹</button>
+        <button class="char-mini" id="charPlay" aria-label="Играть/пауза">▶</button>
+        <button class="char-mini" id="charNext" aria-label="Следующая фраза">›</button>
+        <button class="char-close" id="charClose" aria-label="Закрыть">✕</button>
+      </div>
+    </div>
+    <div class="char-col">
+      <button class="char-avatar" id="charAvatar" aria-label="Ирина — персонаж сайта">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="43" cy="12" rx="8" ry="13" fill="#e8b4b0" transform="rotate(16 43 12)" opacity="0.9"/>
+          <circle cx="32" cy="21" r="10.5" fill="#f4ece6"/>
+          <path d="M32 31c-8.5 0-16 5.5-17.5 16l1.5 1.5h32l1.5-1.5C48 36.5 40.5 31 32 31z" fill="#f4ece6"/>
+          <circle cx="21" cy="40" r="1.8" fill="#b3123c"/>
+          <path d="M20 44c6 4 13 7 12 12" stroke="#e8b4b0" stroke-width="1.4" stroke-linecap="round" opacity="0.8"/>
+        </svg>
+      </button>
+      <div class="char-name">Ирина</div>
+    </div>
+  </div>
 
   <!-- CHAT -->
   <button class="chat-btn" id="chatBtn" aria-label="Открыть чат">
@@ -1287,6 +1423,83 @@
     updateNickUI();
     connectNext();
   };
+})();
+</script>
+
+<script>
+// ----- Персонаж «Ирина» — голос поддержки -----
+(function () {
+  var phrases = [
+    { t: 'Ты не одна. Насилие — <em>никогда</em> не твоя вина.', a: 'char1.mp3' },
+    { t: 'Твой голос имеет значение. <em>Не молчи.</em>', a: 'char2.mp3' },
+    { t: 'Если рядом кто-то страдает — <em>услышь его.</em>', a: 'char3.mp3' },
+    { t: '<em>Поверь. Защити.</em> Позови на помощь.', a: 'char4.mp3' },
+    { t: 'Вместе мы можем остановить это. <em>Скажи нет насилию.</em>', a: 'char5.mp3' }
+  ];
+
+  var idx = 0;
+  var isOpen = false;
+  var audio = null;
+
+  var bubble = document.getElementById('charBubble');
+  var quote = document.getElementById('charQuote');
+  var avatar = document.getElementById('charAvatar');
+  var playBtn = document.getElementById('charPlay');
+
+  function stop() {
+    if (audio) { audio.pause(); audio = null; }
+    avatar.classList.remove('speaking');
+    playBtn.textContent = '▶';
+  }
+
+  function say(i, auto) {
+    idx = ((i % phrases.length) + phrases.length) % phrases.length;
+    if (audio) { audio.pause(); audio = null; }
+    var a = new Audio(phrases[idx].a);
+    audio = a;
+    quote.innerHTML = phrases[idx].t;
+    avatar.classList.add('speaking');
+    playBtn.textContent = '❚❚';
+    var p = a.play();
+    if (p && p.catch) p.catch(function () {});
+    a.addEventListener('ended', function () {
+      avatar.classList.remove('speaking');
+      playBtn.textContent = '▶';
+      if (isOpen && auto) {
+        setTimeout(function () { if (isOpen) say(idx + 1, true); }, 650);
+      }
+    });
+  }
+
+  function open() {
+    isOpen = true;
+    bubble.classList.add('on');
+    say(idx, true);
+  }
+
+  function close() {
+    isOpen = false;
+    bubble.classList.remove('on');
+    stop();
+  }
+
+  avatar.addEventListener('click', function () {
+    if (isOpen) close(); else open();
+  });
+
+  document.getElementById('charClose').addEventListener('click', close);
+  document.getElementById('charPrev').addEventListener('click', function (e) { e.stopPropagation(); say(idx - 1, isOpen); });
+  document.getElementById('charNext').addEventListener('click', function (e) { e.stopPropagation(); say(idx + 1, isOpen); });
+  playBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    if (audio && !audio.paused) { audio.pause(); avatar.classList.remove('speaking'); playBtn.textContent = '▶'; }
+    else say(idx, isOpen);
+  });
+
+  // тихое приветствие один раз
+  setTimeout(function () {
+    if (!isOpen) open();
+  }, 4500);
 })();
 </script>
 
