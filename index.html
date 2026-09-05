@@ -922,19 +922,42 @@
   })();
 </script>
 
-<script src="https://unpkg.com/mqtt@5/dist/mqtt.min.js"></script>
 <script>
-// ----- Онлайн-чат (MQTT / HiveMQ public broker) -----
+(function loadMqtt() {
+  var urls = [
+    'https://cdn.jsdelivr.net/npm/mqtt@5/dist/mqtt.min.js',
+    'https://unpkg.com/mqtt@5/dist/mqtt.min.js'
+  ];
+  function tryLoad(i) {
+    if (i >= urls.length) { fire(null); return; }
+    var s = document.createElement('script');
+    s.src = urls[i];
+    s.onload = function () { fire(window.mqtt || null); };
+    s.onerror = function () { s.remove(); tryLoad(i + 1); };
+    document.head.appendChild(s);
+  }
+  function fire(m) {
+    if (window.__mqttReady) { window.__mqttReady(m); window.__mqttReady = null; }
+  }
+  tryLoad(0);
+})();
+</script>
+<script>
+// ----- Онлайн-чат (MQTT, мульти-брокер) -----
 (function () {
-  var BROKER = 'wss://broker.hivemq.com:8884/mqtt';
+  var BROKERS = [
+    'wss://broker.emqx.io:8084/mqtt',
+    'wss://test.mosquitto.org:8081/mqtt',
+    'wss://broker.hivemq.com:8884/mqtt'
+  ];
   var TOPIC_CHAT = 'net-nasiliyu/chat';
   var TOPIC_ONLINE = 'net-nasiliyu/online';
   var CLIENT_ID = 'nn-' + Math.random().toString(16).slice(2, 12);
   var NICK_KEY = 'netn_v1:nick';
 
-  var mqttObj = window.mqtt;
-  var client = null;
+  var mqttLib = null;
   var connected = false;
+  var connTries = 0;
   var nick = localStorage.getItem(NICK_KEY) || '';
   var myId = CLIENT_ID + ':' + Date.now();
 
@@ -954,7 +977,6 @@
   var seen = localHist.map(function (m) { return m.id; });
   var unseen = 0;
   var presence = {};
-  var panelWasOpen = false;
 
   function esc(s) {
     return String(s)
@@ -1054,62 +1076,116 @@
     client.publish(TOPIC_ONLINE, JSON.stringify({ id: myId, nick: nick, t: Date.now() }), { qos: 0 });
   }
 
-  function connect() {
-    if (!mqttObj) { offline('Сервер чата не загружен'); return; }
+  var brokerIdx = 0;
+  var connectingNow = false;
+
+  function connectNext() {
+    if (connectingNow) return;
+    if (!mqttLib) { offline('Библиотека чата не загрузилась'); return; }
+    if (connTries >= BROKERS.length) {
+      connTries = 0;
+      brokerIdx = 0;
+      connectingNow = false;
+      if (panel.classList.contains('open')) setStatus('off', 'Комната недоступна — пробуем снова…');
+      setTimeout(connectNext, 15000);
+      return;
+    }
+
+    connectingNow = true;
+    var url = BROKERS[brokerIdx];
+    var c;
     try {
-      client = mqttObj.connect(BROKER, {
+      c = mqttLib.connect(url, {
         clientId: CLIENT_ID,
-        connectTimeout: 15000,
-        reconnectPeriod: 3000,
-        keepalive: 30,
+        connectTimeout: 6000,
+        reconnectPeriod: 2500,
+        keepalive: 20,
         clean: true
       });
-    } catch (e) { offline('Ошибка подключения'); return; }
+    } catch (e) { c = null; }
 
-    client.on('connect', function () {
+    if (!c) {
+      brokerIdx++; connTries++; connectingNow = false;
+      setTimeout(connectNext, 600);
+      return;
+    }
+    client = c;
+    var killed = false;
+
+    function kill() {
+      killed = true;
+      try { c.end(true); } catch (e) {}
+    }
+
+    var t1 = setTimeout(function () {
+      if (!connected) {
+        kill(); brokerIdx++; connTries++; connectingNow = false;
+        setTimeout(connectNext, 600);
+      }
+    }, 9000);
+
+    c.on('connect', function () {
+      clearTimeout(t1);
       connected = true;
+      connectingNow = false;
+      connTries = 0;
       setStatus('connected');
-      client.subscribe(TOPIC_CHAT);
-      client.subscribe(TOPIC_ONLINE);
+      c.subscribe(TOPIC_CHAT);
+      c.subscribe(TOPIC_ONLINE);
+      updateNickUI();
       heartBeat();
     });
 
-    client.on('message', function (t, p) {
+    c.on('message', function (t, p) {
       if (t === TOPIC_CHAT) onMsg(t, p);
       else onPresence(t, p);
     });
 
-    client.on('error', function () {
-      if (!connected) offline('Комната недоступна');
+    c.on('error', function () {
+      if (!connected && !killed) {
+        clearTimeout(t1); kill(); brokerIdx++; connTries++; connectingNow = false;
+        setTimeout(connectNext, 600);
+      }
     });
 
-    client.on('close', function () {
+    c.on('close', function () {
       connected = false;
-      if (panel.classList.contains('open')) setStatus('reconnecting');
+      clearTimeout(t1);
+      if (panel.classList.contains('open')) {
+        setStatus('reconnecting');
+        setTimeout(function () {
+          if (!connected && !killed) {
+            kill(); brokerIdx++; connTries++; connectingNow = false;
+            setTimeout(connectNext, 600);
+          }
+        }, 12000);
+      }
     });
-
-    var int1 = setInterval(heartBeat, 20000);
-    var int2 = setInterval(prunePresence, 10000);
   }
 
   function offline(msg) {
     setStatus('off', msg);
-    input.disabled = true;
-    sendBtn.disabled = true;
+    updateNickUI();
+    if (panel.classList.contains('open')) {
+      try { if (client) client.end(true); } catch (e) {}
+      connectingNow = false;
+      client = null;
+    }
   }
 
   function setStatus(kind, text) {
-    var base = { connecting: 'Подключение к комнате…', connected: 'Комната · по-настоящему', reconnecting: 'Переподключение…', off: text || 'Комната недоступна — офлайн' }[kind];
+    var base = { connecting: 'Подключение к комнате…', connected: 'Комната · по-настоящему', reconnecting: 'Переподключение…', off: text || 'Комната недоступна' }[kind];
     statusEl.textContent = base;
     statusEl.classList.toggle('off', kind === 'off');
   }
 
   function updateNickUI() {
+    var usable = connected || !mqttLib;
     if (nick) {
       nickRow.style.display = 'none';
       input.placeholder = 'Напиши что-то доброе…';
-      input.disabled = !connected;
-      sendBtn.disabled = !connected;
+      input.disabled = !usable;
+      sendBtn.disabled = !usable;
     } else {
       nickRow.style.display = 'flex';
       input.disabled = true;
@@ -1118,13 +1194,33 @@
     }
   }
 
+  // Локальное зеркало: если все брокеры недоступны — чат работает между вкладками этого браузера
+  var bc = (typeof BroadcastChannel !== 'undefined') ? new BroadcastChannel('net-nasiliyu-room') : null;
+  if (bc) {
+    bc.onmessage = function (ev) {
+      var m = ev.data;
+      if (!m || !m.id || m.id === myId) return;
+      if (seen.indexOf(m.id) !== -1) return;
+      seen.push(m.id);
+      addMsg(m, false);
+    };
+  }
+
+  function deliverLocal(m) {
+    addMsg(m, true);
+    if (bc) { try { bc.postMessage(m); } catch (e) {} }
+  }
+
   function send() {
     var text = input.value.trim();
-    if (!text || !nick || !connected) return;
+    if (!text || !nick) return;
     var m = { id: myId, n: nick, m: text, t: Date.now() };
-    try {
-      client.publish(TOPIC_CHAT, JSON.stringify(m), { qos: 0 });
-    } catch (e) { return; }
+    if (connected && client) {
+      try { client.publish(TOPIC_CHAT, JSON.stringify(m), { qos: 0 }); }
+      catch (e) { deliverLocal(m); }
+    } else {
+      deliverLocal(m);
+    }
     input.value = '';
     input.focus();
   }
@@ -1135,11 +1231,16 @@
     panel.setAttribute('aria-hidden', 'false');
     unseen = 0;
     badge.classList.remove('show');
-    setStatus(connected ? 'connected' : 'connecting');
-    if (!connected && mqttObj) {} // wait for connect/error
+    setStatus(connected ? 'connected' : (mqttLib ? 'connecting' : 'off'));
     updateNickUI();
     heartBeat();
     setTimeout(function () { body.scrollTop = body.scrollHeight; }, 50);
+    if (!connected) {
+      try { if (client) client.end(true); } catch (e) {}
+      connectingNow = false;
+      client = null;
+      setTimeout(connectNext, 300);
+    }
   });
 
   document.getElementById('chatClose').addEventListener('click', function () {
@@ -1177,7 +1278,15 @@
   }
   btn.addEventListener('click', renderHist, { once: true });
 
-  connect();
+  // Запуск: ждём загрузки библиотеки mqtt (или стартуем локально без неё)
+  window.__mqttReady = function (m) {
+    mqttLib = (m && m.connect) ? m : null;
+    if (!mqttLib) setStatus('off', 'Онлайн недоступен — локальный режим');
+    setInterval(heartBeat, 20000);
+    setInterval(prunePresence, 10000);
+    updateNickUI();
+    connectNext();
+  };
 })();
 </script>
 
