@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>НЕТ НАСИЛИЮ — против насилия над женщинами</title>
+<style>
+  :root {
+    --coal: #0c0a09;
+    --smoke: #1a1614;
+    --crimson: #b3123c;
+    --crimson-dim: #57101f;
+    --rose: #e8b4b0;
+    --bone: #f4ece6;
+    --ink: #8a7f78;
+    --line: rgba(244, 236, 230, 0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--coal);
+    color: var(--bone);
+    font-family: "Georgia", "Times New Roman", serif;
+    overflow-x: hidden;
+  }
+
+  ::selection { background: var(--crimson); color: var(--coal); }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: var(--coal);
+  }
+
+  .hero video,
+  .hero img.hero-gif {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.28;
+    filter: saturate(0.55) contrast(1.05) brightness(0.6);
+    animation: slowZ 18s ease-in-out infinite alternate;
+  }
+
+  @keyframes slowZ {
+    from { transform: scale(1); }
+    to   { transform: scale(1.08); }
+  }
+
+  .hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 70%, transparent 0%, var(--coal) 85%),
+      linear-gradient(180deg, rgba(12,10,9,0.7) 0%, rgba(12,10,9,0.15) 45%, var(--coal) 100%);
+  }
+
+  .hero-backdrop {
+    position: absolute;
+    inset: 0;
+    background-image: url("img/01.jpg");
+    background-size: cover;
+    background-position: center;
+    opacity: 0.06;
+    filter: blur(24px);
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 2rem;
+    max-width: 900px;
+  }
+
+  .hero-eyebrow {
+    font-family: "Arial", sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.6em;
+    text-transform: uppercase;
+    color: var(--rose);
+    opacity: 0.7;
+    margin-bottom: 1.6rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.6rem, 8vw, 6.5rem);
+    font-weight: 200;
+    line-height: 1.02;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .hero h1 .strike { color: var(--crimson); text-decoration: line-through; text-decoration-color: var(--crimson); text-decoration-thickness: 0.03em; }
+
+  .hero-sub {
+    margin: 2rem auto 0;
+    max-width: 560px;
+    font-size: clamp(0.95rem, 2vw, 1.15rem);
+    line-height: 1.8;
+    color: var(--ink);
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    font-family: "Arial", sans-serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--ink);
+    animation: floaty 2.4s ease-in-out infinite;
+  }
+
+  @keyframes floaty {
+    0%, 100% { transform: translate(-50%, 0); }
+    50%      { transform: translate(-50%, 8px); }
+  }
+
+  /* ---------- MARQUEE ---------- */
+  .marquee {
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 1.1rem 0;
+    background: var(--smoke);
+  }
+
+  .marquee span {
+    display: inline-block;
+    padding-right: 2rem;
+    font-family: "Arial", sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--rose);
+    animation: scrollX 30s linear infinite;
+  }
+
+  @keyframes scrollX {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* ---------- MANIFESTO ---------- */
+  .manifesto {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: clamp(4rem, 10vw, 9rem) 1.5rem;
+    text-align: center;
+  }
+
+  .manifesto blockquote {
+    font-size: clamp(1.3rem, 3.2vw, 2rem);
+    font-weight: 200;
+    line-height: 1.7;
+    font-style: italic;
+  }
+
+  .manifesto blockquote strong { color: var(--crimson); font-style: normal; font-weight: 400; }
+
+  /* ---------- VOICE ---------- */
+  .voice {
+    padding: clamp(4rem, 10vw, 8rem) 1.5rem;
+    text-align: center;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(177, 18, 60, 0.12) 0%, transparent 60%),
+      var(--coal);
+    border-top: 1px solid var(--line);
+  }
+
+  .voice .label {
+    font-family: "Arial", sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--crimson);
+    margin-bottom: 1.6rem;
+  }
+
+  .voice h2 {
+    font-size: clamp(1.8rem, 4.5vw, 3rem);
+    font-weight: 200;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .voice p {
+    margin: 1.4rem auto 2.4rem;
+    max-width: 480px;
+    color: var(--ink);
+    line-height: 1.8;
+  }
+
+  .player {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.2rem;
+    padding: 1.1rem 1.6rem 1.1rem 1.1rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--smoke);
+  }
+
+  .player audio { width: min(320px, 60vw); }
+
+  .player audio::-webkit-media-controls-panel { background: var(--smoke); }
+  .player audio::-webkit-media-controls-current-time-display,
+  .player audio::-webkit-media-controls-time-remaining-display { color: var(--ink); }
+
+  .pulse {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--crimson);
+    box-shadow: 0 0 0 0 rgba(177, 18, 60, 0.5);
+    animation: pulse 2s ease-out infinite;
+    flex: none;
+  }
+
+  @keyframes pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(177, 18, 60, 0.5); }
+    70%  { box-shadow: 0 0 0 18px rgba(177, 18, 60, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(177, 18, 60, 0); }
+  }
+
+  .voice-note {
+    margin-top: 1.6rem;
+    font-family: "Arial", sans-serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  /* ---------- STATS ---------- */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .stat {
+    background: var(--coal);
+    padding: 3rem 1.5rem;
+    text-align: center;
+  }
+
+  .stat .num {
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    font-weight: 300;
+    color: var(--crimson);
+    line-height: 1;
+  }
+
+  .stat .label {
+    margin-top: 1rem;
+    font-family: "Arial", sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  /* ---------- GALLERY ---------- */
+  .gallery {
+    padding: clamp(4rem, 10vw, 8rem) 1.5rem 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .gallery-head {
+    text-align: center;
+    margin-bottom: 3.5rem;
+  }
+
+  .gallery-head h2 {
+    font-size: clamp(1.8rem, 4.5vw, 3.2rem);
+    font-weight: 200;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .gallery-head p {
+    margin-top: 1rem;
+    color: var(--ink);
+    font-family: "Arial", sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.8rem;
+  }
+
+  .grid figure {
+    position: relative;
+    overflow: hidden;
+    border-radius: 6px;
+    aspect-ratio: 1;
+    border: 1px solid var(--line);
+  }
+
+  .grid img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(0.6) brightness(0.75) contrast(1.05);
+    transition: transform 1.2s cubic-bezier(0.2, 0.6, 0.2, 1), filter 1.2s ease;
+  }
+
+  .grid figure:hover img {
+    transform: scale(1.06);
+    filter: grayscale(0) brightness(1) contrast(1.02);
+  }
+
+  .grid figure::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 55%, rgba(12,10,9,0.75) 100%);
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+
+  .grid figure:hover::after { opacity: 1; }
+
+  /* ---------- CTA ---------- */
+  .cta {
+    text-align: center;
+    padding: clamp(4rem, 10vw, 9rem) 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta::before {
+    content: "НЕТ";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(8rem, 30vw, 22rem);
+    color: transparent;
+    -webkit-text-stroke: 1px var(--line);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .cta h2 {
+    position: relative;
+    font-size: clamp(2rem, 5.5vw, 4.5rem);
+    font-weight: 200;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .cta .line { width: 60px; height: 1px; background: var(--crimson); margin: 2rem auto; }
+
+  .cta p { position: relative; max-width: 480px; margin: 0 auto; color: var(--ink); line-height: 1.8; }
+
+  .btn {
+    display: inline-block;
+    margin-top: 2.6rem;
+    position: relative;
+    padding: 1rem 2.6rem;
+    border: 1px solid var(--crimson-dim);
+    color: var(--rose);
+    font-family: "Arial", sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    text-decoration: none;
+    background: rgba(177, 18, 60, 0.12);
+    transition: background 0.4s ease, border-color 0.4s ease, letter-spacing 0.4s ease;
+  }
+
+  .btn:hover {
+    background: var(--crimson);
+    border-color: var(--crimson);
+    color: var(--coal);
+    letter-spacing: 0.55em;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 2.4rem 1.5rem;
+    text-align: center;
+    font-family: "Arial", sans-serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+</style>
+</head>
+<body>
+
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <div class="hero-backdrop"></div>
+    <img class="hero-gif" src="hero.gif" alt="Кадры">
+    <div class="hero-content">
+      <div class="hero-eyebrow">Голос, который не замолкнет</div>
+      <h1>Нет <span class="strike">насилию</span><br>над женщинами</h1>
+      <p class="hero-sub">Каждая женщина имеет право на жизнь без страха. Каждая — на защиту, справедливость и уважение. Насилие не останется тишиной. Оно останется именами.</p>
+    </div>
+    <div class="hero-scroll">Листай вниз</div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee">
+    <span>Ни одного удара &nbsp;·&nbsp; Ни одной угрозы &nbsp;·&nbsp; Ни одного «надо было молчать» &nbsp;·&nbsp; Молчание — не согласие &nbsp;·&nbsp; Один голос решает всё &nbsp;·&nbsp; </span>
+    <span>Ни одного удара &nbsp;·&nbsp; Ни одной угрозы &nbsp;·&nbsp; Ни одного «надо было молчать» &nbsp;·&nbsp; Молчание — не согласие &nbsp;·&nbsp; Один голос решает всё &nbsp;·&nbsp; </span>
+  </div>
+
+  <!-- MANIFESTO -->
+  <section class="manifesto">
+    <blockquote>
+      «Насилие начинается там, где заканчивается уважение. Мы говорим <strong>нет</strong> — громко, вместе и на каждой улице, где женщина боится идти домой.»
+    </blockquote>
+  </section>
+
+  <!-- VOICE -->
+  <section class="voice" id="voice">
+    <div class="label">Озвучка · 34 сек</div>
+    <h2>Услышь голос</h2>
+    <p>Включи и послушай. Эти слова — напоминание о том, что молчать нельзя.</p>
+    <div class="player">
+      <span class="pulse" aria-hidden="true"></span>
+      <audio controls preload="none" src="voice.mp3"></audio>
+    </div>
+    <div class="voice-note">Насилие — никогда не твоя вина</div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat">
+      <div class="num">1 из&nbsp;3</div>
+      <div class="label">женщин сталкиваются<br>с насилием в жизни</div>
+    </div>
+    <div class="stat">
+      <div class="num">70&nbsp;%</div>
+      <div class="label">преступлений против женщин<br>совершаются близкими людьми</div>
+    </div>
+    <div class="stat">
+      <div class="num">1&nbsp;голос</div>
+      <div class="label">может спасти жизнь.<br>Услышь его</div>
+    </div>
+    <div class="stat">
+      <div class="num">0</div>
+      <div class="label">оправданий<br>для насилия</div>
+    </div>
+  </div>
+
+  <!-- GALLERY -->
+  <section class="gallery" id="faces">
+    <div class="gallery-head">
+      <h2>Их нельзя забыть</h2>
+      <p>Каждая фотография — чья-то история</p>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <h2>Не молчи</h2>
+    <div class="line"></div>
+    <p>Если ты или кто-то рядом столкнулся с насилием — ты не один. Поделись историей. Позови на помощь. Твой голос важен.</p>
+    <a class="btn" href="#top">Скажи нет</a>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>Нет насилию над женщинами &nbsp;·&nbsp; 2026</footer>
+
+<script>
+  var total = 31;
+  var grid = document.getElementById('grid');
+  var html = '';
+  for (var i = 1; i <= total; i++) {
+    var n = (i < 10 ? '0' : '') + i;
+    html += '<figure><img src="img/' + n + '.jpg" alt="Кадр ' + i + '" loading="lazy"></figure>';
+  }
+  grid.innerHTML = html;
+</script>
+
+</body>
+</html>
