@@ -1686,12 +1686,12 @@
 <script>
 // ============================================================
 //  ПАССИВНЫЙ ДОХОД · всё бесплатно
-//  Заполни строки ниже своими значениями — карточки и реклама
-//  появятся на сайте автоматически. Пустые поля скрывают
-//  соответствующие карточки.
+//  Заполни строки ниже — карточки и реклама появятся на сайте
+//  автоматически. Пустые поля скрывают соответствующие блоки.
 // ============================================================
 var SUP = {
-  yaBlockId: '',   // Реклама Яндекс.РСЯ: ID блока вида 'R-A-1234567-1' (кабинет Яндекс Директ)
+  yaBlockId: '',   // Реклама Яндекс.РСЯ: ID блока вида 'R-A-1234567-1' (если домен пройдёт)
+  adScript: '',    // ИЛИ сюда вставь полный код any-рекламной сети (Adsterra, MellowAds и др.)
   boostyUrl: '',   // Ссылка на твой Boosty, напр. 'https://boosty.to/твой-ник'
   daUrl: '',       // Ссылка на DonationAlerts, напр. 'https://www.donationalerts.com/r/твой-ник'
   yoomoneyUrl: '', // Ссылка на ЮMoney-форму, напр. 'https://yoomoney.ru/to/41001...'
@@ -1744,13 +1744,37 @@ var SUP = {
   }
   bindCopy('usdt'); bindCopy('card');
 
-  if (SUP.yaBlockId) {
-    var holder = document.getElementById('adRender');
+  var holder = document.getElementById('adRender');
+  var adSlot = document.getElementById('adSlot');
+  var yctx = document.getElementById('yctx');
+
+  function injectHtml(html) {
+    var box = document.createElement('div');
+    box.innerHTML = html;
+    var scripts = box.getElementsByTagName('script');
+    var toRun = [];
+    while (scripts.length) {
+      toRun.push(scripts[0]);
+      scripts[0].parentNode.removeChild(scripts[0]);
+    }
+    holder.appendChild(box);
+    for (var i = 0; i < toRun.length; i++) {
+      var s = document.createElement('script');
+      if (toRun[i].src) { s.src = toRun[i].src; s.async = true; }
+      else { s.text = toRun[i].textContent; }
+      document.head.appendChild(s);
+    }
+    adSlot.hidden = false;
+  }
+
+  if (SUP.adScript) {
+    injectHtml(SUP.adScript);
+  } else if (SUP.yaBlockId) {
     var div = document.createElement('div');
     div.id = 'yandex_rtb_' + SUP.yaBlockId;
     div.style.minHeight = '90px';
     holder.appendChild(div);
-    document.getElementById('adSlot').hidden = false;
+    adSlot.hidden = false;
 
     var renderAd = function () {
       if (window.Ya && Ya.Context && Ya.Context.AdvManager) {
@@ -1766,7 +1790,7 @@ var SUP = {
     window.yaContextCb = window.yaContextCb || [];
     window.yaContextCb.push(renderAd);
 
-    if (!document.getElementById('yctx')) {
+    if (!yctx) {
       var s = document.createElement('script');
       s.id = 'yctx';
       s.src = 'https://yandex.ru/ads/system/context.js';
