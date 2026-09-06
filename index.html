@@ -455,6 +455,136 @@
     color: var(--ink);
   }
 
+  /* ---------- AD / SUPPORT ---------- */
+  .ad-slot {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1.5rem 3.5rem;
+    text-align: center;
+  }
+
+  .ad-slot[hidden] { display: none; }
+
+  .ad-slot .ad-hint {
+    font-family: "Arial", sans-serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.6;
+    margin-top: 0.8rem;
+  }
+
+  .support {
+    padding: clamp(4rem, 10vw, 8rem) 1.5rem;
+    text-align: center;
+    border-top: 1px solid var(--line);
+    background:
+      radial-gradient(ellipse at 50% 100%, rgba(177, 18, 60, 0.1) 0%, transparent 60%),
+      var(--coal);
+  }
+
+  .support .label {
+    font-family: "Arial", sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--crimson);
+    margin-bottom: 1.6rem;
+  }
+
+  .support h2 {
+    font-size: clamp(1.8rem, 4.5vw, 3rem);
+    font-weight: 200;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .support p {
+    margin: 1.4rem auto 2.6rem;
+    max-width: 520px;
+    color: var(--ink);
+    line-height: 1.8;
+  }
+
+  .support-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 0.9rem;
+    max-width: 900px;
+    margin: 0 auto 2.2rem;
+  }
+
+  .donate-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    min-height: 118px;
+    padding: 1.2rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--smoke);
+    color: inherit;
+    cursor: pointer;
+    font-family: "Arial", sans-serif;
+    text-align: center;
+    text-decoration: none;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: border-color 0.35s ease, transform 0.35s ease, background 0.35s ease;
+  }
+
+  .donate-card:hover { border-color: var(--crimson); transform: translateY(-3px); background: rgba(177, 18, 60, 0.1); }
+
+  .donate-card .d-title {
+    font-size: 0.72rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--rose);
+  }
+
+  .donate-card .d-sub {
+    font-size: 0.68rem;
+    line-height: 1.5;
+    color: var(--ink);
+    letter-spacing: 0.05em;
+  }
+
+  .donate-card[hidden] { display: none; }
+
+  .support-note {
+    font-family: "Arial", sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.75;
+  }
+
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 1.8rem;
+    transform: translate(-50%, 20px);
+    background: var(--crimson);
+    color: var(--coal);
+    padding: 0.8rem 1.4rem;
+    border-radius: 999px;
+    font-family: "Arial", sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    z-index: 90;
+  }
+
+  .toast.on { opacity: 1; transform: translate(-50%, 0); }
+
   /* ---------- CHARACTER ---------- */
   .char-wrap {
     position: fixed;
@@ -935,6 +1065,44 @@
     <div class="line"></div>
     <p>Если ты или кто-то рядом столкнулся с насилием — ты не один. Поделись историей. Позови на помощь. Твой голос важен.</p>
     <a class="btn" href="#top">Скажи нет</a>
+  </section>
+
+  <!-- YANDEX РСЯ: рекламный блок (показывается, когда в конфиге SUP заполнен yaBlockId) -->
+  <section class="ad-slot" id="adSlot" hidden>
+    <div id="adRender"></div>
+    <div class="ad-hint">Рекламная пауза</div>
+  </section>
+
+  <!-- SUPPORT -->
+  <section class="support" id="support">
+    <div class="label">Развитие проекта</div>
+    <h2>Поддержи нас</h2>
+    <p>Сайт существует без бюджета. Помоги голосу звучать громче — любой вклад идёт на продвижение и новые истории. Все способы ниже бесплатны для автора.</p>
+
+    <div class="support-grid">
+      <a class="donate-card" data-link="boosty" href="#" target="_blank" rel="noopener nofollow">
+        <span class="d-title">Boosty</span>
+        <span class="d-sub">Подписка и донаты без комиссий для автора</span>
+      </a>
+      <a class="donate-card" data-link="da" href="#" target="_blank" rel="noopener nofollow">
+        <span class="d-title">DonationAlerts</span>
+        <span class="d-sub">Разовый донат в пару кликов</span>
+      </a>
+      <a class="donate-card" data-link="yoomoney" href="#" target="_blank" rel="noopener nofollow">
+        <span class="d-title">ЮMoney</span>
+        <span class="d-sub">Перевод с карты любого банка</span>
+      </a>
+      <button class="donate-card" data-copy="usdt" type="button">
+        <span class="d-title">USDT (TRC-20)</span>
+        <span class="d-sub">Крипто-донат · нажми, чтобы скопировать адрес</span>
+      </button>
+      <button class="donate-card" data-copy="card" type="button">
+        <span class="d-title">Карта / СБП</span>
+        <span class="d-sub">Нажми, чтобы скопировать номер</span>
+      </button>
+    </div>
+
+    <div class="support-note">Каждый вклад идёт на развитие проекта</div>
   </section>
 
   <!-- VISITS -->
@@ -1512,6 +1680,100 @@
   setTimeout(function () {
     if (!isOpen) open();
   }, 4500);
+})();
+</script>
+
+<script>
+// ============================================================
+//  ПАССИВНЫЙ ДОХОД · всё бесплатно
+//  Заполни строки ниже своими значениями — карточки и реклама
+//  появятся на сайте автоматически. Пустые поля скрывают
+//  соответствующие карточки.
+// ============================================================
+var SUP = {
+  yaBlockId: '',   // Реклама Яндекс.РСЯ: ID блока вида 'R-A-1234567-1' (кабинет Яндекс Директ)
+  boostyUrl: '',   // Ссылка на твой Boosty, напр. 'https://boosty.to/твой-ник'
+  daUrl: '',       // Ссылка на DonationAlerts, напр. 'https://www.donationalerts.com/r/твой-ник'
+  yoomoneyUrl: '', // Ссылка на ЮMoney-форму, напр. 'https://yoomoney.ru/to/41001...'
+  usdt: 'TCVveUpDKVMHNzeHUy8tgDLXkRDF6fTtp5', // Tron-адрес для USDT (TRC-20) — уже сгенерирован
+  card: ''         // Номер карты для переводов (необязательно)
+};
+
+(function () {
+  function setHref(k) {
+    var map = { boosty: 'boostyUrl', da: 'daUrl', yoomoney: 'yoomoneyUrl' };
+    var el = document.querySelector('[data-link="' + k + '"]');
+    if (!el) return;
+    if (SUP[map[k]]) { el.href = SUP[map[k]]; } else { el.style.display = 'none'; }
+  }
+  setHref('boosty'); setHref('da'); setHref('yoomoney');
+
+  var toast = document.getElementById('toast');
+  var toastT = null;
+  function showToast(text) {
+    toast.textContent = text;
+    toast.classList.add('on');
+    clearTimeout(toastT);
+    toastT = setTimeout(function () { toast.classList.remove('on'); }, 2200);
+  }
+
+  function bindCopy(k) {
+    var btn = document.querySelector('[data-copy="' + k + '"]');
+    if (!btn) return;
+    if (!SUP[k]) { btn.style.display = 'none'; return; }
+    btn.addEventListener('click', function () {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(SUP[k]).then(function () {
+          showToast(k === 'usdt' ? 'Адрес скопирован' : 'Номер скопирован');
+        }, function () { fallbackCopy(k); });
+        return;
+      }
+      fallbackCopy(k);
+    });
+    function fallbackCopy(k) {
+      var ta = document.createElement('textarea');
+      ta.value = SUP[k];
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+      showToast(k === 'usdt' ? 'Адрес скопирован' : 'Номер скопирован');
+    }
+  }
+  bindCopy('usdt'); bindCopy('card');
+
+  if (SUP.yaBlockId) {
+    var holder = document.getElementById('adRender');
+    var div = document.createElement('div');
+    div.id = 'yandex_rtb_' + SUP.yaBlockId;
+    div.style.minHeight = '90px';
+    holder.appendChild(div);
+    document.getElementById('adSlot').hidden = false;
+
+    var renderAd = function () {
+      if (window.Ya && Ya.Context && Ya.Context.AdvManager) {
+        Ya.Context.AdvManager.render({
+          blockId: SUP.yaBlockId,
+          renderTo: div.id,
+          darkTheme: true
+        });
+      } else {
+        setTimeout(renderAd, 300);
+      }
+    };
+    window.yaContextCb = window.yaContextCb || [];
+    window.yaContextCb.push(renderAd);
+
+    if (!document.getElementById('yctx')) {
+      var s = document.createElement('script');
+      s.id = 'yctx';
+      s.src = 'https://yandex.ru/ads/system/context.js';
+      s.async = true;
+      document.head.appendChild(s);
+    }
+  }
 })();
 </script>
 
