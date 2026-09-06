@@ -241,6 +241,20 @@
     color: var(--ink);
   }
 
+  /* ---------- VIDEO ---------- */
+  .video-block {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1.5rem 3rem;
+  }
+
+  .block-video {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: #000;
+  }
+
   /* ---------- STATS ---------- */
   .stats {
     display: grid;
@@ -847,7 +861,7 @@
   <!-- HERO -->
   <section class="hero" id="top">
     <div class="hero-backdrop"></div>
-    <video class="hero-video" src="hero.mp4" autoplay muted loop playsinline preload="auto" poster="hero.gif"></video>
+    <img class="hero-gif" src="hero.gif" alt="Кадры">
     <div class="hero-content">
       <div class="hero-eyebrow">Голос, который не замолкнет</div>
       <h1>Нет <span class="strike">насилию</span><br>над женщинами</h1>
@@ -879,6 +893,11 @@
       <audio controls preload="none" src="voice.mp3"></audio>
     </div>
     <div class="voice-note">Насилие — никогда не твоя вина</div>
+  </section>
+
+  <!-- VIDEO -->
+  <section class="video-block" id="video">
+    <video class="block-video" src="hero.mp4" controls playsinline preload="metadata" poster="hero.gif"></video>
   </section>
 
   <!-- STATS -->
